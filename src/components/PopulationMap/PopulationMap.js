@@ -23,15 +23,15 @@ class PopulationMap extends React.Component {
     year: 1970,
     totalPopulation: 209738,
     chartVisibility: true,
-    legendVisibility: true
+    legendVisibility: true,
   };
 
-  handleSliderChange = rangeClickValue => {
+  handleSliderChange = (rangeClickValue) => {
     const populationDate = switchPopulationDate(rangeClickValue);
     this.setState({
       rangeSliderValue: rangeClickValue,
       year: populationDate[2],
-      totalPopulation: populationDate[1]
+      totalPopulation: populationDate[1],
     });
 
     this.handleStyleChange(rangeClickValue);
@@ -40,10 +40,10 @@ class PopulationMap extends React.Component {
     const populationDate = switchPopulationDate(
       this.state.rangeSliderValue + 1
     );
-    this.setState(state => ({
+    this.setState((state) => ({
       rangeSliderValue: state.rangeSliderValue + 1,
       year: populationDate[2],
-      totalPopulation: populationDate[1]
+      totalPopulation: populationDate[1],
     }));
     this.handleStyleChange(this.state.rangeSliderValue + 1);
     this.populationSwitch(this.state.rangeSliderValue + 1);
@@ -53,16 +53,16 @@ class PopulationMap extends React.Component {
     const populationDate = switchPopulationDate(
       this.state.rangeSliderValue - 1
     );
-    this.setState(state => ({
+    this.setState((state) => ({
       rangeSliderValue: state.rangeSliderValue - 1,
       year: populationDate[2],
-      totalPopulation: populationDate[1]
+      totalPopulation: populationDate[1],
     }));
     this.handleStyleChange(this.state.rangeSliderValue - 1);
     this.populationSwitch(this.state.rangeSliderValue - 1);
   };
 
-  handleStyleChange = value => {
+  handleStyleChange = (value) => {
     const populationDate = switchPopulationDate(value);
     const map = this.map;
     map.setPaintProperty("iloilo_city_barangay_3d", "fill-extrusion-color", [
@@ -86,7 +86,7 @@ class PopulationMap extends React.Component {
       10000,
       "hsl(19, 95%, 31%)",
       13000,
-      "hsl(19, 89%, 21%)"
+      "hsl(19, 89%, 21%)",
     ]);
     map.setPaintProperty("iloilo_city_barangay_3d", "fill-extrusion-height", [
       "interpolate",
@@ -105,30 +105,30 @@ class PopulationMap extends React.Component {
       12000,
       1200,
       15000,
-      1500
+      1500,
     ]);
   };
 
-  getBarangaylist = populationDate => {
+  getBarangaylist = (populationDate) => {
     const features = this.map.queryRenderedFeatures({
-      layers: ["iloilo_city_barangay_3d"]
+      layers: ["iloilo_city_barangay_3d"],
     });
     // const features = this.map.querySourceFeatures("iloilo_city_barangay_3d", {
     //   sourceLayer: "IloiloCityBarangay_toMapbox-bafzbm"
     // });
 
     let barangayList = [];
-    features.map(feature => {
+    features.map((feature) => {
       barangayList.push({
         barangayName: feature.properties.BarangayName,
-        population: feature.properties[populationDate]
+        population: feature.properties[populationDate],
       });
     });
 
     return barangayList;
   };
 
-  getHighestPopulation = barangayList => {
+  getHighestPopulation = (barangayList) => {
     return barangayList
       .sort((a, b) => {
         return b.population - a.population;
@@ -136,31 +136,31 @@ class PopulationMap extends React.Component {
       .slice(0, 5);
   };
 
-  getLowestPopulation = barangayList => {
+  getLowestPopulation = (barangayList) => {
     return barangayList
-      .filter(list => list.population !== 0)
+      .filter((list) => list.population !== 0)
       .sort((a, b) => a.population - b.population)
       .slice(0, 5);
   };
 
-  populationSwitch = rangeValue => {
+  populationSwitch = (rangeValue) => {
     const populationDate = switchPopulationDate(rangeValue);
     const barangayList = this.getBarangaylist(populationDate[0]);
     const highestPopulation = this.getHighestPopulation(barangayList);
     const lowestPopulation = this.getLowestPopulation(barangayList);
     this.setState({
       lowestPopulation: lowestPopulation,
-      highestPopulation: highestPopulation
+      highestPopulation: highestPopulation,
     });
   };
 
-  highlightFeature = e => {
+  highlightFeature = (e) => {
     if (hoveredStateId) {
       this.map.setFeatureState(
         {
           source: "composite",
           sourceLayer: "IloiloCityBarangay_toMapbox-bafzbm",
-          id: hoveredStateId
+          id: hoveredStateId,
         },
         { hover: false }
       );
@@ -170,7 +170,7 @@ class PopulationMap extends React.Component {
       {
         source: "composite",
         sourceLayer: "IloiloCityBarangay_toMapbox-bafzbm",
-        id: hoveredStateId
+        id: hoveredStateId,
       },
       { hover: true }
     );
@@ -182,7 +182,7 @@ class PopulationMap extends React.Component {
         {
           source: "composite",
           sourceLayer: "IloiloCityBarangay_toMapbox-bafzbm",
-          id: hoveredStateId
+          id: hoveredStateId,
         },
         { hover: false }
       );
@@ -198,10 +198,7 @@ class PopulationMap extends React.Component {
   popupFeatureInfo(e, barangayName, populationValue, popup) {
     const itemDescription = `<h4>Brgy. ${barangayName}</h4>
                                  <h4>Population : ${populationValue}</h4> `;
-    popup
-      .setLngLat(e.lngLat)
-      .setHTML(itemDescription)
-      .addTo(this.map);
+    popup.setLngLat(e.lngLat).setHTML(itemDescription).addTo(this.map);
   }
   toggleChartVisibility = () => {
     if (this.state.chartVisibility === false) {
@@ -219,14 +216,14 @@ class PopulationMap extends React.Component {
   };
 
   handleWidthChange = () => {
-    if (innerWidth > 960 && this.state.chartVisibility === false) {
+    if (window.innerWidth > 960 && this.state.chartVisibility === false) {
       this.setState({ chartVisibility: true });
-    } else if (innerWidth < 960) {
+    } else if (window.innerWidth < 960) {
       this.setState({ chartVisibility: false });
     }
-    if (innerWidth > 960 && this.state.legendVisibility === false) {
+    if (window.innerWidth > 960 && this.state.legendVisibility === false) {
       this.setState({ legendVisibility: true });
-    } else if (innerWidth < 960) {
+    } else if (window.innerWidth < 960) {
       this.setState({ legendVisibility: false });
     }
   };
@@ -240,8 +237,8 @@ class PopulationMap extends React.Component {
   //         }
   //   }
 
-  correctZoom = zoom => {
-    if (innerWidth <= 600) {
+  correctZoom = (zoom) => {
+    if (window.innerWidth <= 600) {
       return 11.5;
     } else {
       return zoom;
@@ -256,15 +253,15 @@ class PopulationMap extends React.Component {
       center: [lng, lat],
       zoom: this.correctZoom(zoom),
       bearing: -40,
-      pitch
+      pitch,
       // attributionControl: false
     });
     const popup = new mapboxgl.Popup({
       closeButton: false,
-      closeOnClick: false
+      closeOnClick: false,
     });
 
-    this.map.on("mousemove", "iloilo_city_barangay_3d", e => {
+    this.map.on("mousemove", "iloilo_city_barangay_3d", (e) => {
       this.map.getCanvas().style.cursor = "pointer";
       if (e.features.length > 0) {
         const barangayName = e.features[0].properties.BarangayName;
@@ -288,7 +285,7 @@ class PopulationMap extends React.Component {
     this.handleWidthChange();
   }
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     window.removeEventListener("resize", this.handleWidthChange);
   }
   render() {
@@ -298,11 +295,11 @@ class PopulationMap extends React.Component {
           flexGrow: "1",
           display: "flex",
           position: "relative",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <div
-          ref={el => (this.mapContainer = el)}
+          ref={(el) => (this.mapContainer = el)}
           className="webmap"
           style={{ flexGrow: "1" }}
         ></div>
